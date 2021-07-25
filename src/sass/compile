@@ -1,0 +1,21 @@
+#! /bin/bash
+
+dest="../../res/css/"
+
+for file in *.scss
+do
+    name=`basename "$file" ".scss"`
+    if [[ -f "$file.checksum" ]]
+    then
+        old_checksum=`cat "$file.checksum"`
+    else
+        old_checksum=""
+    fi
+    checksum=`md5sum -z "$file"`
+    if [[ "$checksum" != "$old_checksum" ]]
+    then
+        scss "$file" "$dest$name.css"
+        echo "$checksum">"$file.checksum"
+        echo "$file compiled"
+    fi
+done
